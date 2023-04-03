@@ -46,6 +46,7 @@ speaking = False
 # Statistics
 total_tts_duration = 0
 total_stt_chars = 0
+program_start_time = 0
 
 # Method to call once recognition ends
 def stop_cb(evt):
