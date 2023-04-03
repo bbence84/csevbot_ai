@@ -250,7 +250,6 @@ def init_ai():
 def end_program():
     global gpt_service
     global program_start_time
-    global program_end_time
     global total_stt_chars
     global total_tts_duration
 
