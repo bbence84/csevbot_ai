@@ -168,7 +168,8 @@ def run_ai():
 
 def check_internet():
         
-    log = logging.getLogger("bot_log")
+    logging.basicConfig(filename='gpt_service.log', level=logging.DEBUG, filemode='w')
+    log = logging.getLogger("bot_log")    
     log.info("Checking internet connection")
     if (utils.has_internet() == True):
         return
@@ -248,31 +249,35 @@ def init_ai():
     gpt_service = GPTChatService(translation[ui_lang]['lang'])
     print(translation[ui_lang]['lang'])
 
-def end_program():
-    global gpt_service
-    global program_start_time
-    global total_stt_chars
-    global total_tts_duration
-
-    program_end_time = time.time()
-
-    program_run_duration = program_end_time - program_start_time
-    print(f'STATS: program duration: {program_run_duration} seconds')
-    print(f'STATS: total TTS duration: {total_tts_duration} sec')
-    print(f'STATS: total STT characters: {total_stt_chars} chars')    
-    print(f'STATS: total OpenAI API tokens: {gpt_service.get_stats()}')        
-    
+def end_program(write_stats = True):
 
     lcd_service.clear_screen()
     GPIO.cleanup()     
 
+    if (write_stats):
+        global gpt_service
+        global program_start_time
+        global total_stt_chars
+        global total_tts_duration
+
+        program_end_time = time.time()
+        program_run_duration = program_end_time - program_start_time
+        print(f'STATS: program duration: {program_run_duration} seconds')
+        print(f'STATS: total TTS duration: {total_tts_duration} sec')
+        print(f'STATS: total STT characters: {total_stt_chars} chars')    
+        print(f'STATS: total OpenAI API tokens: {gpt_service.get_stats()}')        
+    
+
+
 def main():
     try:
         init_gpio()
-        init_azure()
-        init_ai()
         check_internet()
+        init_azure()        
+        init_ai()        
         run_ai() 
+    except KeyboardInterrupt:
+        end_program()   
     finally:
         end_program()       
     
